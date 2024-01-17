@@ -381,10 +381,7 @@ class StringMobject(SVGMobject, ABC):
                 label_hex=int_to_hex(label) if is_labelled else None
             )
         )
-        prefix, suffix = self.get_content_prefix_and_suffix(
-            is_labelled=is_labelled
-        )
-        return "".join((prefix, content, suffix))
+        return content
 
     @staticmethod
     @abstractmethod

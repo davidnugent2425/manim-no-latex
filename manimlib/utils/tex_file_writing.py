@@ -4,6 +4,7 @@ from contextlib import contextmanager
 import os
 import re
 import yaml
+import subprocess
 
 from manimlib.config import get_custom_config
 from manimlib.config import get_manim_dir
@@ -50,37 +51,28 @@ def get_tex_config() -> dict[str, str]:
         })
     return SAVED_TEX_CONFIG
 
+def get_svg_from_latex(latex_str):
+    # Path to your Node.js script
+    script_path = 'run-mathjax.js'
+    script_dir = 'mathjax-scripts'
+
+    # Change the current working directory to the script's directory
+    os.chdir(script_dir)
+
+    # Run the Node.js script with the provided LaTeX string
+    result = subprocess.run(['node', script_path, latex_str], capture_output=True, text=True)
+
+    # Return to the original directory if needed
+    os.chdir('..')
+
+    # Return the standard output from the script
+    return result.stdout if result.returncode == 0 else None
 
 def tex_content_to_svg_file(
     content: str, template: str, additional_preamble: str,
     short_tex: str
 ) -> str:
-    tex_config = get_tex_config()
-    if not template or template == tex_config["template"]:
-        compiler = tex_config["compiler"]
-        preamble = tex_config["preamble"]
-    else:
-        config = get_tex_template_config(template)
-        compiler = config["compiler"]
-        preamble = config["preamble"]
-
-    if additional_preamble:
-        preamble += "\n" + additional_preamble
-    full_tex = "\n\n".join((
-        "\\documentclass[preview]{standalone}",
-        preamble,
-        "\\begin{document}",
-        content,
-        "\\end{document}"
-    )) + "\n"
-
-    svg_file = os.path.join(
-        get_tex_dir(), hash_string(full_tex) + ".svg"
-    )
-    if not os.path.exists(svg_file):
-        # If svg doesn't exist, create it
-        with display_during_execution("Writing " + short_tex):
-            create_tex_svg(full_tex, svg_file, compiler)
+    svg_file = get_svg_from_latex(short_tex)
     return svg_file
 
 

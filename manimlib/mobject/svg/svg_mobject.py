@@ -119,8 +119,8 @@ class SVGMobject(VMobject):
             self.file_name
         )
 
-    def mobjects_from_file(self, file_path: str) -> list[VMobject]:
-        element_tree = ET.parse(file_path)
+    def mobjects_from_file(self, svg_file: str) -> list[VMobject]:
+        element_tree = ET.ElementTree(ET.fromstring(svg_file))
         new_tree = self.modify_xml_tree(element_tree)
 
         # New svg based on tree contents

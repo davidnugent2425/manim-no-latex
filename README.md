@@ -1,3 +1,9 @@
+# Basic example of using MathJax in Manim
+* Ensure you have [Node](https://nodejs.org/en/download) installed.
+* Install the node packages: `cd mathjax-scripts && npm i && cd ..`
+* Install manimlib: `pip install -e .`
+* Run the basic scene to demonstrate LaTeK working using MathJax: `python basic_scene.py`
+
 <p align="center">
     <a href="https://github.com/3b1b/manim">
         <img src="https://raw.githubusercontent.com/3b1b/manim/master/logo/cropped.png">
